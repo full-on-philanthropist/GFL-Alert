@@ -37,12 +37,11 @@ public class Main {
             }
         });
 		
-		String ans = "Y";
-		String map = "";
 		ArrayList<String> list = new ArrayList<String>();
 		Scanner scan = new Scanner(System.in); //retrieves name of map from IO
-		System.out.println("Refresh time? (in seconds)");
-		int refresh = scan.nextInt() * 1000;
+		
+		String ans = "";
+		String map = null;
 		while (!ans.equals("n")){
 			System.out.println("Name of map: ");
 			map = scan.nextLine();
@@ -55,14 +54,14 @@ public class Main {
 		scan.close();
 		
 		while(true){
-							    		//pL = previousLine, keeps a history of the previous 5 lines in the stream
-			String pL1 = null;  		//line which contains the server name
+                                        //pL = previousLine, keeps a history of the previous 5 lines in the stream
+			String pL1 = null;          //line which contains the server name
 			String pL2 = null;
 			String pL3 = null;
-			String pL4 = null;  		//line which contains the server IP
+			String pL4 = null;          //line which contains the server IP
 			String pL5 = null;
 			String currentLine = null;  //line which contains the map name
-			int x = 0; 					//variable to check if "if" statement has run
+			int x = 0;                  //variable to check if "if" statement has run
 			
 	        while ((currentLine = in.readLine()) != null){
 	        	x = 0;
@@ -86,7 +85,7 @@ public class Main {
 			    }
 	        }
 	        in.close();
-	        Thread.sleep(refresh);
+	        Thread.sleep(10000);
 	        in = new BufferedReader(new InputStreamReader(gfl.openStream()));
 		}
 	}
