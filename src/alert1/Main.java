@@ -8,6 +8,7 @@ import java.awt.event.*;
 import javax.imageio.*;
 
 public class Main {
+	private static String pL4Cropped;
 	public static void main(String[] args) throws IOException, InterruptedException, URISyntaxException {
 		URL gfl = new URL("http://gflclan.com/GFL/serverlist.php");
 		BufferedReader in = new BufferedReader(new InputStreamReader(gfl.openStream()));
@@ -16,23 +17,39 @@ public class Main {
             System.out.println("SystemTray is not supported.");
         }
 		
+		if(!Desktop.isDesktopSupported()){
+		    System.out.println("Desktop is not supported.");
+		}
+		
 	    SystemTray tray = SystemTray.getSystemTray(); //creates system tray notification instance
 	    Image img = ImageIO.read(new File("gflicon.jpg"));
-	    TrayIcon trayIc = new TrayIcon(img, "Server Scanner");
-	    trayIc.setImageAutoSize(true); 
+	    TrayIcon tI = new TrayIcon(img, "Server Scanner");
+	    tI.setImageAutoSize(true); 
 	    try{
-	        tray.add(trayIc);
+	        tray.add(tI);
 	    } catch (AWTException e){
 	        System.err.println(e);
 	    }
 	    
+	    tI.addMouseListener(new MouseAdapter(){
+        	public void mouseClicked(MouseEvent e){
+        		try {
+					Desktop.getDesktop().browse(new URI("steam://connect/" + pL4Cropped));
+				} catch (IOException | URISyntaxException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+        	}
+       	});
+	    
 	    PopupMenu popup = new PopupMenu();
 	    MenuItem exitItem = new MenuItem("Exit");
 	    popup.add(exitItem);
-	    trayIc.setPopupMenu(popup);
+	    tI.setPopupMenu(popup);
 	    exitItem.addActionListener(new ActionListener(){
             public void actionPerformed(ActionEvent e){
-                tray.remove(trayIc);
+                tray.remove(tI);
+                System.out.println("Scan Stopped.");
                 System.exit(0);
             }
         });
@@ -40,16 +57,13 @@ public class Main {
 		ArrayList<String> list = new ArrayList<String>();
 		Scanner scan = new Scanner(System.in); //retrieves name of map from IO
 		
-		String ans = "";
-		String map = null;
-		while (!ans.equals("n")){
-			System.out.println("Name of map: ");
+		String map = "";
+		while (!map.equals("n")){
+			System.out.println("Add map (\"n\" to start scan): ");
 			map = scan.nextLine();
 			
-			list.add(map);
-			
-			System.out.println("Add another? (Y/n)");
-			ans = scan.nextLine();
+			if(!map.equals("n"))
+				list.add(map);
 		}
 		scan.close();
 		
@@ -69,20 +83,13 @@ public class Main {
 	        	x = 0;
 		        for(int i = 0; i < list.size(); i++){
 		        	if(currentLine.contains(list.get(i))){
-		        		String pL1fixed = pL1.replaceAll("\\<.*?\\> ?", "").trim(); //removes HTML/CSS formatting
-		        		String pL4fixed = pL4.replaceAll("\\<.*?\\> ?", "").trim();
-		        		String curfixed = currentLine.replaceAll("\\<.*?\\> ?", "").trim();
-		        		trayIc.displayMessage("Server Found for \"" + curfixed + "\"",
-		        				              "Server Name: \"" + pL1fixed + "\"" +
-		        				              "\nServer IP: " + pL4fixed, TrayIcon.MessageType.INFO);
-		        		final String pL4relay = pL4fixed;
-		        		trayIc.addMouseListener(new MouseAdapter() {
-		        		    public void mouseClicked(MouseEvent e) {
-		        		        if (e.getClickCount() == 1) {
-		        		        	System.out.println(pL4relay);
-		        		        }
-		        		    }
-		        		});
+		        		String pL1Cropped = pL1.replaceAll("\\<.*?\\> ?", "").trim(); //removes HTML/CSS formatting
+		        		pL4Cropped = pL4.replaceAll("\\<.*?\\> ?", "").trim();
+		        		String curCropped = currentLine.replaceAll("\\<.*?\\> ?", "").trim();
+		        		tI.displayMessage("Server Found for \"" + curCropped + "\"",
+		        				              "Server Name: \"" + pL1Cropped + "\"" +
+		        				              "\nServer IP: " + pL4Cropped, TrayIcon.MessageType.INFO);
+		        		
 		        		x = 1;
 		        		Thread.sleep(10000);
 		        	}
