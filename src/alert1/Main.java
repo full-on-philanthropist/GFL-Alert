@@ -33,12 +33,14 @@ public class Main {
 	    
 	    tI.addMouseListener(new MouseAdapter(){
         	public void mouseClicked(MouseEvent e){
-        		try {
-					Desktop.getDesktop().browse(new URI("steam://connect/" + pL4Cropped));
-				} catch (IOException | URISyntaxException e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
-				}
+        		if (e.getButton() == MouseEvent.BUTTON1 && e.getClickCount() == 1) {
+	        		try {
+						Desktop.getDesktop().browse(new URI("steam://connect/" + pL4Cropped));
+					} catch (IOException | URISyntaxException e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					}
+        		}
         	}
        	});
 	    
