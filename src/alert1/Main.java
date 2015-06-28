@@ -8,7 +8,7 @@ import java.awt.event.*;
 import javax.imageio.*;
 
 public class Main {
-	public static void main(String[] args) throws IOException, InterruptedException {
+	public static void main(String[] args) throws IOException, InterruptedException, URISyntaxException {
 		URL gfl = new URL("http://gflclan.com/GFL/serverlist.php");
 		BufferedReader in = new BufferedReader(new InputStreamReader(gfl.openStream()));
 
@@ -53,6 +53,8 @@ public class Main {
 		}
 		scan.close();
 		
+		System.out.println("Scan started...");
+		
 		while(true){
                                         //pL = previousLine, keeps a history of the previous 5 lines in the stream
 			String pL1 = null;          //line which contains the server name
@@ -73,7 +75,16 @@ public class Main {
 		        		trayIc.displayMessage("Server Found for \"" + curfixed + "\"",
 		        				              "Server Name: \"" + pL1fixed + "\"" +
 		        				              "\nServer IP: " + pL4fixed, TrayIcon.MessageType.INFO);
+		        		final String pL4relay = pL4fixed;
+		        		trayIc.addMouseListener(new MouseAdapter() {
+		        		    public void mouseClicked(MouseEvent e) {
+		        		        if (e.getClickCount() == 1) {
+		        		        	System.out.println(pL4relay);
+		        		        }
+		        		    }
+		        		});
 		        		x = 1;
+		        		Thread.sleep(10000);
 		        	}
 		        }
 			    if(x == 0){
@@ -85,7 +96,7 @@ public class Main {
 			    }
 	        }
 	        in.close();
-	        Thread.sleep(10000);
+	        Thread.sleep(60000);
 	        in = new BufferedReader(new InputStreamReader(gfl.openStream()));
 		}
 	}
